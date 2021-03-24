@@ -6,8 +6,7 @@ $methods = [
 				'name' => 'firstname',
 				'source' => 'p',
 				'required' => true,
-				'pattern' => 'name',
-				'default' => 'DEFAULT'
+				'pattern' => 'name'
 			],
 			[
 				'name' => 'secondname',
