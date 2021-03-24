@@ -5,27 +5,33 @@ $methods = [
 			[
 				'name' => 'firstname',
 				'source' => 'p',
-				'required' => true
+				'required' => true,
+				'pattern' => 'name',
+				'default' => 'DEFAULT'
 			],
 			[
 				'name' => 'secondname',
 				'source' => 'p',
-				'required' => true
+				'required' => true,
+				'pattern' => 'name'
 			],
 			[
 				'name' => 'position',
 				'source' => 'p',
-				'required' => false
+				'required' => false,
+				'default' => ''
 			],
 			[
 				'name' => 'phone',
 				'source' => 'p',
-				'required' => true
+				'required' => true,
+				'pattern' => 'phone'
 			],
 			[
 				'name' => 'iban',
 				'source' => 'p',
-				'required' => true
+				'required' => true,
+				'pattern' => 'iban'
 			]
 		]
 	]
