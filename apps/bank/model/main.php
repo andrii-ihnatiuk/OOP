@@ -14,14 +14,14 @@ class Main
 	public function formsubmitAmbassador(array $data):?array {
 		// Тут модель повинна бути допрацьована, щоб використовувати бази даних, тощо
 
-		$key = '1630441797:AAGkZjxDWBPZ54Qh5C0N4nXbYuQy5V-YxUU'; // Ключ API телеграм 
+		$key = null; // Ключ API телеграм 
 
 		if (strlen($key) == 0) { // Проверка на наличие ключа API бота
 			throw new \Exception('Missing API key!');
 		}
 
 		$result = null;
-		$chat = 496102264;
+		$chat = null // ID мого чату
 		$text = "Нова заявка на заміну *IBAN*:\n" . $data['firstname'] . ' '. $data['secondname'];
 
 		if (array_key_exists('position', $data)) { // Формирование запроса в зависимости от наличия поля
