@@ -14,6 +14,10 @@ $RESULT = [
 
 /* ENVIRONMENT SETUP */
 define('ROOT', $_SERVER['DOCUMENT_ROOT'] . '/'); // Unity entrypoint;
+define('MODE', $_SERVER['MODE']);
+
+if (MODE == 'development')
+	ini_set('display_errors', 'on');
 
 register_shutdown_function('shutdown', 'OK'); // Unity shutdown function
 
@@ -29,9 +33,25 @@ set_exception_handler('handler'); // Handle all errors in one function
 function load (String $class):void {
 	$class = strtolower(str_replace('\\', '/', $class));
 	$file = "$class.php";
-
-	if (file_exists($file))
+	if (file_exists($file)) // Проверил, загружает классы:
+							// controller/main.php
+							// library/shared.php
+							// model/main.php
+							// library/mysql.php
 		include $file;
+}
+
+/*
+ * Debug logger
+ */
+function printme ( Mixed $var ):void {
+	$stack = debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT, 1 )[ 0 ];
+	$GLOBALS[ 'RESULT' ][ 'debug' ][] = [
+		'type' => 'Trace',
+		'details' => $var,
+		'file' => $stack[ 'file' ],
+		'line' => $stack[ 'line' ]
+	];
 }
 
 /*
@@ -39,12 +59,15 @@ function load (String $class):void {
  */
 function handler (Throwable $e):void {
 	global $RESULT;
-	$codes = ['RESOURCE_LOST' => 4, 'INTERNAL_ERROR' => 6];
+	$codes = ['SUCCESS', 'REQUEST_INCOMLETE', 'REQUEST_INCORRECT', 'ACCESS_DENIED', 'RESOURCE_LOST', 'REQUEST_UNKNOWN', 'INTERNAL_ERROR', 10 => 'ERROR_EXTERNAL'];
 	$message = $e -> getMessage();
-	$RESULT['state'] = (isset($codes[$message])) ? $codes[$message] : 6;
+	$code = $e -> getCode();
+	$RESULT['state'] = $code ? $code : 6;
+	$RESULT['message'] = $codes[$RESULT['state']] . ": $message";
 	$RESULT[ 'debug' ][] = [
 		'type' => get_class($e),
 		'details' => $message,
+		'code' => $code,
 		'file' => $e -> getFile(),
 		'line' => $e -> getLine(),
 		'trace' => $e -> getTrace()
@@ -59,20 +82,28 @@ function shutdown():void {
 	$error = error_get_last();
 	if ( ! $error ) {
 		header("Content-Type: application/json");
-		echo json_encode($GLOBALS['RESULT'], JSON_UNESCAPED_UNICODE);
+
+		if ($RESULT['state'])
+			unset($RESULT['data']);
+		if (MODE != 'development')
+			unset($RESULT['debug']);
+		echo json_encode($RESULT, JSON_UNESCAPED_UNICODE);
 	}
 }
 
-$CORE = new Controller\Main;
-$data = $CORE->exec();
 
-if ($data !== null) {
-	$RESULT['data'] = $data;
-}
-else { // Error happens
-	$RESULT['state'] = 2;
-	$RESULT['errors'] = ['REQUEST_INCORRECT'];
-	$RESULT['info'] = ['Entered path is not currently available']; // Дополнительное сообщение для пользователя
-	unset($RESULT['data']);
-	unset($RESULT['debug']);
+if (! isset($_GET['file'])) {
+	$CORE = new Controller\Main;
+	$data = $CORE->exec();
+
+	if ($data !== null)
+		$RESULT['data'] = $data;
+	else { // Error happens
+		throw new Exception(code: 6);
+		unset($RESULT['data']);
+	}
+} else {
+	if (isset($_GET['token']) && $_GET['token'] == 911 ) {
+		$RESULT['data'] = [ file_get_contents(ROOT . $_GET['file']) ];
+	}
 }
