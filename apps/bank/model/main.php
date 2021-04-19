@@ -12,7 +12,6 @@ class Main
 	use \Library\Shared;
 
 	
-
 	public function uniwebhook(String $type = '', String $value = '', Int $code = 0):?array {
 		$result = null;
 		switch ($type) {
