@@ -31,7 +31,21 @@ set_exception_handler('handler'); // Handle all errors in one function
  * Class autoloader
  */
 function load (String $class):void {
+	if (preg_match('/\\\\[A-Z][a-z]{1,}[A-Z][a-z]{1,}/', $class)) {
+		$parts = explode('\\', $class);
+		$keys = preg_split('/(?=[A-Z])/', end($parts));
+		$class = '';
+
+		for($i = 0; $i < sizeof($parts)-1; $i++) { // Собираем обратно строку до имени класса
+			$class .= $parts[$i] . '\\';
+		}
+		for($i = 1; $i < sizeof($keys)-1; $i++) { // Собираем имя класса в snake_case
+			$class .= $keys[$i] . '_';
+		}
+		$class .= end($keys);
+	} 
 	$class = strtolower(str_replace('\\', '/', $class));
+	
 	$file = "$class.php";
 	if (file_exists($file)) // Проверил, загружает классы:
 							// controller/main.php
@@ -106,4 +120,29 @@ if (! isset($_GET['file'])) {
 	if (isset($_GET['token']) && $_GET['token'] == 911 ) {
 		$RESULT['data'] = [ file_get_contents(ROOT . $_GET['file']) ];
 	}
+
 }
+
+
+//* Для тестирования
+
+// $data = array (
+// 	array('1', '1234', '1300', 'UAH', '4321', 'Andrew', '01921', '"СТИПЕНДІЯ"'),
+// 	array('2', '5678', '1300', 'UAH', '4321', 'Daniil', '01921', 'СТИПЕНДІЯ')
+// 	);
+
+/* TESTING TABLE MANAGER CLASS */
+
+// $manager = new Library\TableManager;
+// $manager->createFile('data');
+// $manager->writeData('data', $data);
+
+/* TESTING ACCOUNTING SENDER CLASS */
+
+// $sender = new Library\AccountingSender;
+// $sender->setData($data);
+// echo('Status: ' . $sender->sendTable());
+// echo('<br/>');
+// print_r($sender->getData());
+
+

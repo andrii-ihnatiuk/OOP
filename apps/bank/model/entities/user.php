@@ -1,22 +1,35 @@
 <?php
-/**
- * User entity
- *
- * @author Serhii Shkrabak
- * @global object $CORE->model
- * @package Model\Entities
- */
+
+
 namespace Model\Entities;
 
-class User
-{
-	use \Library\Shared;
-	use \Library\Entity;
-	use \Library\Uniroad;
 
-	public static function search(?Int $chat = 0, ?String $guid = '', Int $limit = 0):self|array|null {
+class User {  
+    use \Library\Shared;
+
+    
+    public function __construct(private String $guid, private String $iban, private String $name, private String $surname, private String $patronymic, private ?Int $id = 0) {
+        $this->db = $this->getDB();
+    }
+
+
+    public function save():self {
+        $db = $this->db;
+
+        if (!$this->id) {
+            $this->id = $db->insert([
+				'Users' => [ 'guid' => $this->guid, 'name' => $this->name, 
+                             'surname' => $this->surname, 'patronymic' => $this->patronymic, 
+                             'iban' => $this->iban]
+			])->run(true)->storage['inserted'];
+        }
+        
+        return $this;
+    }    
+
+    public static function search(?String $guid = '', Int $limit = 0):self|array|null {
 		$result = [];
-		foreach (['chat', 'guid'] as $var)
+		foreach (['guid'] as $var)
 			if ($$var)
 				$filters[$var] = $$var;
 		$db = self::getDB();
@@ -25,33 +38,53 @@ class User
 			$users->where(['Users' => $filters]);
 		foreach ($users->many($limit) as $user) {
 				$class = __CLASS__;
-				$result[] = new $class($user['id'], $chat, $user['guid'], $user['message'], $user['service'], $user['input']);
+				$result[] = new $class($user['guid'], $user['iban'], $user['name'], $user['surname'], $user['patronymic'], $user['id']);
 		}
 		return $limit == 1 ? (isset($result[0]) ? $result[0] : null) : $result;
 	}
+    
+    public function getGuid():string {
+        return $this->guid;
+    }
 
-	public function save():self {
-		$db = $this->db;
-		if (!$this->id) {
-			$this->id = $db -> insert([
-				'Users' => [ 'chat' => $this->chat ]
-			])->run(true)->storage['inserted'];
-		}
-		if ($this->_changed)
-			$db -> update('Users', $this->_changed )
-				-> where(['Users'=> ['id' => $this->id]])
-				-> run();
-		return $this;
-	}
+    public function getIban():string {
+        return $this->iban;
+    }
 
-	public function __construct(public Int $id = 0, public ?Int $chat = null, public ?String $guid = null, public ?Int $message = null, public ?Int $service = null, public String|Array|Null $input = '') {
-		$this->db = $this->getDB();
-		$this->input = $this->input ? json_decode($this->input, true) : [];
-		if (!$guid) {
-			$response = $this->uni()->get('accounts', ['type'=>'user'], 'account/create')->one();
-			if (property_exists($response, 'guid')) {
-				$this->set(['guid' => $response->guid]);
-			}
-		}
-	}
+    public function getName():string {
+        return $this->name;
+    }
+
+    public function getSurname():string {
+        return $this->surname;
+    }
+
+    public function getPatronymic():string {
+        return $this->patronymic;
+    }
+
+    public function toString():string {
+        return $this->surname . ' ' . $this->name . ' ' . $this->patronymic;
+    }
+
+    public function setGuid(Int $id):void {
+        $this->guid = $id;
+    }
+
+    public function setIban(Int $iban):void {
+        $this->iban = $iban;
+    }
+
+    public function setName(String $name):void {
+        $this->name = $name;
+    }
+
+    public function setSurname(String $surname):void {
+        $this->surname = $surname;
+    }
+
+    public function setPatronymic(String $patronymic):void {
+        $this->patronymic = $patronymic;
+    }
+
 }

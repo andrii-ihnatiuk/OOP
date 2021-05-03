@@ -250,6 +250,7 @@ class MySQL {
 			if ( $sql )
 				$this -> request( "INSERT INTO `{$this -> db}`.`$table` $into $sql" );
 		}
+
 		return $this;
 	}
 
@@ -280,12 +281,16 @@ class MySQL {
 		 */
 		$db = $this -> db;
 		$where = '';
+
+		
 		foreach ( $filters as $table => $fields )
 			foreach ( $fields as $column => $value ) {
-				$where .= " $modificator `$db`.`$table`.`$column` = " . ( ( gettype( $value ) == 'string' && isset( $value[ 0 ] ) && $value[ 0 ] == '`' ) ? $value : "'$value'" );
+				$where .= " $modificator `$db`.`$table`.`$column` = " . ( ( gettype( $value ) == 'string' && isset( $value[ 0 ] ) && $value[ 0 ] == '`' || gettype( $value ) == 'integer' ) ? $value : "'$value'" );
 			}
 		if ( $where )
 			$this -> filters .= $this -> filters ? $where : substr( $where, strlen( $modificator ) + 1 );
+
+
 		return $this;
 	}
 

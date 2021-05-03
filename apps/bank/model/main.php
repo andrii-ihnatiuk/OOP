@@ -7,10 +7,11 @@
  * @package Model\Main
  */
 namespace Model;
+
+
 class Main
 {
 	use \Library\Shared;
-
 	
 	public function uniwebhook(String $type = '', String $value = '', Int $code = 0):?array {
 		$result = null;
@@ -23,13 +24,17 @@ class Main
 					$result = [
 						'to' => $GLOBALS['uni.user'],
 						'type' => 'message',
-						'value' => "Сервіс: Реквізити банківських акаунтів користувачів\nЛаскаво просимо до нашої сторінки!",
+						'value' => Entities\Message::search(label: 'greeting'),
 						'keyboard' => [
 							'inline' => true, // Кнопка в сообщении или в меню
-							'buttons' => [
-								[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
-								['id' => -1, 'title' => '🚀 Розпочати роботу']]
+							'buttons' => [[
+								Entities\Button::get(1),
+								Entities\Button::get(-1)]
 							]
+							// 'buttons' => [
+							// 	[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
+							// 	['id' => -1, 'title' => '🚀 Розпочати роботу']]
+							// ]
 						]
 					];
 					break;
@@ -38,15 +43,21 @@ class Main
 					$result = [
 						'to' => $GLOBALS['uni.user'],
 						'type' => 'message',
-						'value' => "*Повернено до головного розділу*",
+						'value' => Entities\Message::search(label: 'back'),
 						'keyboard' => [
 							'inline' => true, // false - в request работает contact | true - работает message, click
 							'buttons' => [
-								[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
-								['id' => 2, 'title' => "Надати номер", 'request' => 'contact']],
-								[['id' => 3, 'title' => 'Отримати привітання', 'request' => 'click'], 
-								['id' => 4, 'title' => 'Ввести свій IBAN']]
-							]
+								[Entities\Button::get(1),
+								Entities\Button::get(2)],
+								[Entities\Button::get(3),
+								Entities\Button::get(4)]
+							]	
+							// 'buttons' => [
+							// 	[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
+							// 	['id' => 2, 'title' => "Надати номер", 'request' => 'contact']],
+							// 	[['id' => 3, 'title' => 'Отримати привітання', 'request' => 'click'], 
+							// 	['id' => 4, 'title' => 'Ввести свій IBAN']]
+							// ]
 						]
 					];
 				}
@@ -54,7 +65,7 @@ class Main
 				$result = [
 					'to' => $GLOBALS['uni.user'],
 					'type' => 'message',
-					'value' => "Сервіс `Банківські реквізити користувачів` отримав повідомлення: $value"
+					'value' => Entities\Message::search(label: 'got_message') . ' ' . $value
 				];
 				break;
 
@@ -66,13 +77,17 @@ class Main
 						$result = [
 							'to' => $GLOBALS['uni.user'],
 							'type' => 'message',
-							'value' => "*Введено до нового розділу*",
+							'value' => Entities\Message::search(label: 'forward'),
 							'keyboard' => [
 								'inline' => false, // false - в request работает contact | true - работает message, click
 								'buttons' => [
-									[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
-									['id' => 2, 'title' => "Надати номер", 'request' => 'contact']]
+										[Entities\Button::get(1),
+										[Entities\Button::get(2)]]
 								]
+								// 'buttons' => [
+								// 	[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
+								// 	['id' => 2, 'title' => "Надати номер", 'request' => 'contact']]
+								// ]  
 							]
 						];
 					}	
@@ -80,33 +95,39 @@ class Main
 						$result = [
 							'to' => $GLOBALS['uni.user'],
 							'type' => 'message',
-							'value' => "Привіт! 🙋"
+							'value' => Entities\Message::search(label: 'hi')
 						];
 					}
 					else if ($code == 4) {
 						$result = [
 							'to' => $GLOBALS['uni.user'],
 							'type' => 'message',
-							'value' => "🗿 Я ще таке не вмію"
+							'value' => Entities\Message::search(label: 'idk')
 						];
 					}
 					else {
 						$result = [
 							'to' => $GLOBALS['uni.user'],
 							'type' => 'message',
-							'value' => "*Виберіть наступну дію:*",
+							'value' => Entities\Message::search(label: 'next'),
 							'keyboard' => [
 								'inline' => true, // false - в request работает contact | true - работает message, click
 								'buttons' => [
-									[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
-									['id' => 2, 'title' => "Надати номер", 'request' => 'contact']],
-									[['id' => 3, 'title' => 'Отримати привітання', 'request' => 'click'], 
-									['id' => 4, 'title' => 'Ввести свій IBAN']]
-								]
+									[Entities\Button::get(1),
+									Entities\Button::get(3)],
+									[Entities\Button::get(4)]
+								]	
+								
+								// 'buttons' => [
+								//	[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
+								//	['id' => 2, 'title' => "Надати номер", 'request' => 'contact']],
+								//	[['id' => 3, 'title' => 'Отримати привітання', 'request' => 'click'], 
+								//	['id' => 4, 'title' => 'Ввести свій IBAN', 'request'=> null]] // на null реагирует ок
+								// ]
 							]
 						];
 					}
-					// Просто логирование для упрощения разработки
+					// Логирование для упрощения разработки
 					$file = ROOT . '/model/log.txt';
 					$message = 'ENTERED CLICK. Action:'.$type.', Val:'.$value.', Code:'.$code."\n";
 					file_put_contents($file, $message, FILE_APPEND);
@@ -117,7 +138,7 @@ class Main
 					$result = [
 						'to' => $GLOBALS['uni.user'],
 						'type' => 'message',
-						'value' => "Сервіс `Банківські реквізити користувачів`. Отримано номер $value"
+						'value' => Entities\Message::search(label: 'got_number') . ' ' . $value
 					];
 					break;
 		}
@@ -125,6 +146,7 @@ class Main
 		return $result;
 	}
 
+	//? Не нужно
 	public function formsubmitAmbassador(String $firstname, String $secondname, String $phone, String $position = ''):?array {
 		$result = null;
 		$chat = 891022220;
