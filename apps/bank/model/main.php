@@ -48,10 +48,9 @@ class Main
 							'inline' => true, // false - в request работает contact | true - работает message, click
 							'buttons' => [
 								[Entities\Button::get(1),
-								Entities\Button::get(2)],
-								[Entities\Button::get(3),
-								Entities\Button::get(4)]
-							]	
+								Entities\Button::get(3)],
+								[Entities\Button::get(4)]
+							]
 							// 'buttons' => [
 							// 	[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
 							// 	['id' => 2, 'title' => "Надати номер", 'request' => 'contact']],
@@ -82,7 +81,7 @@ class Main
 								'inline' => false, // false - в request работает contact | true - работает message, click
 								'buttons' => [
 										[Entities\Button::get(1),
-										[Entities\Button::get(2)]]
+										]
 								]
 								// 'buttons' => [
 								// 	[['id' => 1, 'title' => '🚪 Назад', 'request' => 'message', 'value' => 'вихід'],
