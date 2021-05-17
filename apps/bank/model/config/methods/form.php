@@ -24,5 +24,31 @@ $methods = [
 				'pattern' => ''
 			],
 		]
+	],
+
+	'myInfo' => [
+		'params' => [
+			[
+				'name' => 'name',
+				'source' => 'p',
+				'pattern' => ''
+			],
+			[
+				'name' => 'surname',
+				'source' => 'p',
+				'pattern' => ''
+			],
+			[
+				'name' => 'patronymic',
+				'source' => 'p',
+				'pattern' => ''
+			],
+			[
+				'name' => 'iban',
+				'source' => 'p',
+				'pattern' => ''
+			],
+		]
 	]
+
 ];

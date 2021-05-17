@@ -269,6 +269,7 @@ class MySQL {
 			$sql .= " LIMIT $limit";
 
 		$this -> request( $sql );
+
 		return $this -> result;
 	}
 
@@ -282,14 +283,28 @@ class MySQL {
 		$db = $this -> db;
 		$where = '';
 
-		
-		foreach ( $filters as $table => $fields )
-			foreach ( $fields as $column => $value ) {
-				$where .= " $modificator `$db`.`$table`.`$column` = " . ( ( gettype( $value ) == 'string' && isset( $value[ 0 ] ) && $value[ 0 ] == '`' || gettype( $value ) == 'integer' ) ? $value : "'$value'" );
-			}
+		// FILTERS : Array ( [Buttons] => Array ( [id] => Array ( [0] => 1 [1] => 2 ) ) )
+		// TABLE : Buttons
+		// FIELDS : Array ( [id] => Array ( [0] => 1 [1] => 2 ) )
+		// COLUMN : id
+		// VALUE : Array ( [0] => 1 [1] => 2 )
+
+		if ($modificator == 'OR') {
+			foreach ( $filters as $table => $fields )
+				foreach ( $fields as $column => $values ) {
+					foreach ($values as $value) {
+						$where .= " $modificator `$db`.`$table`.`$column` = " . ( ( gettype( $value ) == 'string' && isset( $value[ 0 ] ) && $value[ 0 ] == '`' || gettype( $value ) == 'integer' ) ? $value : "'$value'" );
+					}
+				}
+		}
+		else {
+			foreach ( $filters as $table => $fields )
+				foreach ( $fields as $column => $value ) {
+					$where .= " $modificator `$db`.`$table`.`$column` = " . ( ( gettype( $value ) == 'string' && isset( $value[ 0 ] ) && $value[ 0 ] == '`' || gettype( $value ) == 'integer' ) ? $value : "'$value'" );
+				}
+		}
 		if ( $where )
 			$this -> filters .= $this -> filters ? $where : substr( $where, strlen( $modificator ) + 1 );
-
 
 		return $this;
 	}
@@ -324,4 +339,5 @@ class MySQL {
 	}
 
     public function __construct ( private String $db, private \MySQLi $connection ) {}
+	
 }

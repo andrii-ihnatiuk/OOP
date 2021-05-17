@@ -24,23 +24,56 @@ class Button {
         return $this;
     }    
 
-    // TODO: Добавить возможность получения всех кнопок за раз
-    public static function get(?Int $id = null, Int $limit = 0):self|array|null {
+    //* OLD METHOD
+    // public static function get(?Int $id = null, Int $limit = 0):self|array|null {
+	// 	$result = [];
+    //     foreach (['id'] as $var)
+	// 		if ($$var)
+	// 			$filters[$var] = $$var;
+	// 	$db = self::getDB();
+	// 	$buttons = $db -> select(['Buttons' => []]);
+	// 	if(!empty($filters))
+	// 		$buttons->where(['Buttons' => $filters]);
+	// 	foreach ($buttons->many($limit) as $button) {
+	// 		$class = __CLASS__;
+	// 		$result[] = new $class($button['title'], $button['request'], $button['value'], $button['id']);
+    //         break;
+	// 	}
+
+	// 	return $result[0]->toArray();
+	// }
+
+    //* ДОБАВЛЕНА ВОЗМОЖНОСТЬ ВЫБОРА ОПРЕДЕЛЕННЫХ КНОПОК ЗА ОДИН ЗАПРОС
+    public static function get(Mixed $id = null, Int $limit = 0):self|array|null {
 		$result = [];
-        foreach (['id'] as $var)
-			if ($$var)
-				$filters[$var] = $$var;
+        $modificator = 'AND';
+        if (gettype($id) == 'array') {
+            for ($i = 0; $i < count($id); $i++) {
+                if (isset($id[$i])) {
+                    $filters['id'][] = $id[$i];
+                }
+            }
+            $modificator = 'OR';
+        } else
+            foreach (['id'] as $var)
+			    if ($$var)
+				    $filters[$var] = $$var;
+
 		$db = self::getDB();
 		$buttons = $db -> select(['Buttons' => []]);
+
 		if(!empty($filters))
-			$buttons->where(['Buttons' => $filters]);
+			$buttons->where(['Buttons' => $filters], $modificator);
 		foreach ($buttons->many($limit) as $button) {
-			$class = __CLASS__;
-			$result[] = new $class($button['title'], $button['request'], $button['value'], $button['id']);
-            break;
+            $class = __CLASS__;
+			$btn = new $class($button['title'], $button['request'], $button['value'], $button['id']);
+            $result[] = $btn->toArray();
 		}
 
-		return $result[0]->toArray();
+        // header("Content-type: application/json; charset='utf-8'");
+        // echo(json_encode($result));
+
+		return gettype($id) == 'integer' ? (isset($result[0]) ? $result[0] : null) : $result;
 	}
 
     public function toArray():array {
@@ -71,6 +104,5 @@ class Button {
     public function setRequest(String $request):void {
         $this->request = $request;
     }
-
 
 }

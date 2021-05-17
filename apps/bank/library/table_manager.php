@@ -8,13 +8,13 @@ class TableManager {
     public function __construct() {
     }
 
-    public function getHandle(String $fileName): ?string { // Формирует путь к файлу
-        $handle = ROOT . '/library/' . "$fileName.csv"; 
+    private static function getHandle(String $fileName): ?string { // Формирует путь к файлу
+        $handle = ROOT . '/library/data/' . "$fileName.csv"; 
          return $handle;
     }
 
-    public function createFile(String $fileName):bool {
-        $handle = $this->getHandle($fileName);
+    public static function createFile(String $fileName):bool {
+        $handle = self::getHandle($fileName);
 
         if (file_exists($handle)) {
             return false;
@@ -28,8 +28,8 @@ class TableManager {
         return $this->writeData($fileName, $header);
     }
 
-    public function writeData(String $fileName, array $data):bool {
-        $handle = $this->getHandle($fileName);
+    public static function writeData(String $fileName, array $data):bool {
+        $handle = self::getHandle($fileName);
         $file = fopen($handle, 'a');
 
         if (is_null($file)) {
@@ -44,6 +44,10 @@ class TableManager {
         else {
             fputcsv($file, $data, ';');
         }
+        fclose($file);
+
+        $file = fopen(ROOT . '/library/data/last_modified.txt', 'w');
+        fwrite($file, filemtime(ROOT . '/library/data/last_modified.txt'));
         fclose($file);
         
         return true;
