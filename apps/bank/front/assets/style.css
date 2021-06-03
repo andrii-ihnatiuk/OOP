@@ -1,0 +1,154 @@
+body {
+    font-size: .875rem;
+    font-family: var(--bs-font-sans-serif);
+    overflow-x: hidden;
+}
+
+.chart_container {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70vw;
+    height: auto;
+}
+
+/*
+ * Navbar
+ */
+
+ .navbar_button {
+    display: none;
+    flex-grow: 0; 
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+ }
+
+ .button_item {
+     height: 10%;
+     width: 60%;
+     background-color: grey;
+     border-radius: 10px;
+     margin-top: 10%;
+ }
+
+ .button_item:first-child {
+     margin-top: 0;
+ }
+ 
+.navbar-brand {
+    flex-grow: 1;
+    margin: 0 !important;
+    text-align: center;
+    padding-top: .7rem !important;
+    padding-bottom: .7rem !important;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.content_container {
+    display: flex;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    z-index: 1;
+    width: 17vw;
+    height: calc(100vh - 52px);
+    height: calc(var(--vh, 1vh) * 100 - 52px);
+    background-color: #f8f9fa;
+    box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
+}
+
+.sidebar_charts {
+    padding: 20px 10px 0 10px
+}
+
+.sidebar_other {
+    padding: 0px 26px 15px;
+    text-align: left;
+}
+
+hr {
+    margin-bottom: 15px !important;
+}
+
+.about {
+    width: 100%;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    background-color: inherit;
+    border: 0;
+}
+
+.content_inner {
+    width: 83vw;
+    padding: 20px;
+    margin-left: 17vw;
+}
+
+.linkContainer {
+    display: flex;
+    padding: .5rem 1rem;
+}
+
+button.nav-link {
+    color: rgb(92, 92, 92);
+    width: 100%;
+    border: 0;
+    margin-left: 10px;
+    font-weight: 500;
+    text-align: start;
+    background-color: inherit;
+}
+
+button.nav-link:hover {
+    color: rgb(92, 92, 92);
+}
+
+.active {
+    color: rgb(54, 106, 231 ) !important;
+}
+
+.icon {
+    fill: rgb(92, 92, 92);
+    width: 25px;
+    height: 25px;
+}
+
+.ic_active {
+    fill: rgb(54, 106, 231 );
+}
+
+
+
+@media screen and (max-width: 1200px) {
+    .sidebar {
+        display: none;
+        width: 35vw;
+    }
+    .content_inner {
+        margin: 0;
+        width: 100vw;
+    }
+    .navbar_button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .navbar-brand {
+        margin: 0 52px 0 0 !important;  
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .sidebar {
+        display: flex !important;
+    }
+}

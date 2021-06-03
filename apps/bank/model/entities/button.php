@@ -67,7 +67,7 @@ class Button {
 		foreach ($buttons->many($limit) as $button) {
             $class = __CLASS__;
 			$btn = new $class($button['title'], $button['request'], $button['value'], $button['id']);
-            $result[] = $btn->toArray();
+            $result[] = $btn->format();
 		}
 
         // header("Content-type: application/json; charset='utf-8'");
@@ -76,7 +76,7 @@ class Button {
 		return gettype($id) == 'integer' ? (isset($result[0]) ? $result[0] : null) : $result;
 	}
 
-    public function toArray():array {
+    public function format():array {
         $data = ['id' => $this->id, 'title' => $this->title, 'request' => $this->request, 'value' => $this->value];
         return $data;
     }

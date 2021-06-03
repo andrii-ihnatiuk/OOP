@@ -27,7 +27,7 @@ class User {
         return $this;
     }    
 
-    public static function search(?String $guid = '', Int $limit = 0):self|array|null {
+    public static function get(?String $guid = '', Int $limit = 0):self|array|null {
 		$result = [];
 		foreach (['guid'] as $var)
 			if ($$var)

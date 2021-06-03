@@ -12,8 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <title>Form</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <script defer src="assets/main.js"></script>
+    <link rel="stylesheet" href="assets/style.css?v=<?=rand()?>">
+    <script defer src="assets/main.js?v=<?=rand()?>"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 </head>
 

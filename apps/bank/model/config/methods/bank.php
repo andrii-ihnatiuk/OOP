@@ -8,6 +8,22 @@ $methods = [
 				'default' => ''
 			] 
 		]
+	],
+
+	'Stat' => [
+		'params' => []
+	],
+
+	'Update' => [
+		'params' => [
+			[
+				'name' => 'iban',
+				'source' => 'p',
+				'default' => ''
+			]
+			
+		]
 	]
+
 
 ];

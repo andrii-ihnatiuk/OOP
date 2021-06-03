@@ -131,7 +131,7 @@ class Main
 	}
 
 
-	//? API METHOD
+	//* API METHOD
 	public function formmyInfo(String $name, String $surname, String $patronymic, String $iban):?array {
 
 		$result = null;
@@ -155,6 +155,7 @@ class Main
 		}
 
 		if (count($not_valid) == 1) {
+			$this->updateBankStat($iban);
 			$user = new Entities\User('user1', $iban, $name, $surname, $patronymic);
 			$result = [
 				'result' => 'valid',
@@ -212,6 +213,39 @@ class Main
 
 	}
 
+	// Method add user to Bank entity by performing +1 on 'users' property
+	private function updateBankStat(String $iban):?array {
+
+		if (strlen(trim($iban)) < 6) 
+			throw new \Exception("IBAN incorrect!");
+			
+		$code = substr($iban, offset: 4, length: 6);
+		$bank = Entities\Bank::get(code: $code, limit: 1);
+	
+		if (!isset($bank))
+			throw new \Exception("Bank not found");
+
+		$bank->set(['users' => $bank->getUsers() + 1]);
+
+		$result = ['bank' => $bank->getName(), 'users' => $bank->getUsers()];
+		return $result;
+	}
+
+	//* API METHOD
+	public function bankStat():?array {
+		$result = null;
+		
+		$banksObj = Entities\Bank::get();
+		foreach ($banksObj as $bank) {
+			$banks[] = $bank->format();
+		}
+		if (isset($banks))
+			$result = $banks;
+
+		return $result;
+	}
+
+
 	public function __construct() {
 		$this->db = new \Library\MySQL('core',
 			\Library\MySQL::connect(
@@ -220,7 +254,6 @@ class Main
 				$this->getVar('DB_PASS', 'e')
 			) );
 		$this->setDB($this->db);
-	
 	}
 
 }
